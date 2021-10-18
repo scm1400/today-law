@@ -90,7 +90,8 @@ def recently_view(id, title, url, proposer_name, proposer_names, content):
                 {'$pop': {'recently_view': -1}}
             )
         temp = True
-        for i in range(5):
+
+        for i in range(len(recently_list[0]['recently_view'])):
             if (recently_list[0]['recently_view'][i]['recently_view_id'] == id):
                 temp = False
                 print('break')

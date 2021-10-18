@@ -5,7 +5,8 @@ from pymongo import MongoClient
 MONGO_URL = os.environ['MONGO_URL']
 MONGO_USERNAME = os.environ['MONGO_USERNAME']
 MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
-client = MongoClient(MONGO_URL, 27017, username=MONGO_USERNAME, password=MONGO_PASSWORD)
+# client = MongoClient(MONGO_URL, 27017, username=MONGO_USERNAME, password=MONGO_PASSWORD)
+client = MongoClient(MONGO_URL, 27017)
 db = client.todaylaw
 
 bp = Blueprint('ranking', __name__, url_prefix='/')

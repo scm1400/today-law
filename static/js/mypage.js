@@ -41,7 +41,7 @@ function edit_profile() {
 }
 
 $(document).ready(function () {
-
+    show_recently()
     // 현재 요청이 인증되었는지 확인 (매 요청마다 확인하는 것인지 맞는지 잘 모르겠음)
     $.ajax({
         type: "GET",
@@ -196,8 +196,7 @@ $(document).ready(function () {
 
                 }
             })
-        }
-        else if ($(this).text().includes('좋아요')) {
+        } else if ($(this).text().includes('좋아요')) {
             console.log('좋아요')
             $.ajax({
                 type: "GET",
@@ -206,12 +205,12 @@ $(document).ready(function () {
                     $("#mypage-contents").empty();
                     like_laws = res['like_laws']
                     let temp_html = `<div class='columns is-mobile' style="flex-wrap: wrap">`
-                    for (let i=0; i<like_laws.length; i++) {
-                       let category = "category"
+                    for (let i = 0; i < like_laws.length; i++) {
+
                         let title = like_laws[i]['title']
-                        let time = "time"
+
                         let contents = "contents"
-                        let agree = "agree"
+
                         temp_html += `<div class='column is-3-tablet is-6-mobile'>
                                         <div class='card'>
                                             <p class="card-header-title">${title}</p>
@@ -221,39 +220,45 @@ $(document).ready(function () {
                                                 </div>
                                             </div>
                                             <footer class='card-footer'>
-                                                <a class='card-footer-item'>공유</a>
-                                                <a class='card-footer-item'>삭제</a>
+                                                <a  class='card-footer-item'>보기</a>
                                             </footer>
                                         </div>
                                         <br>
                                         </div>`
                     }
-                    $("#mypage-contents").append(temp_html+`</div>`)
+                    $("#mypage-contents").append(temp_html + `</div>`)
                 }
             })
         } else if ($(this).text().includes('최근')) {
-            $.ajax({
-                type: "GET",
-                url: `/mypage/recently_view`,
-                success: function (res) {
-                    $("#mypage-contents").empty();
-                    let temp_html = `<div class='columns is-mobile' style="flex-wrap: wrap">`
-                    for (let i = res['recently_list']['recently_view'].length-1; i >= 0; i--) {
-                        console.log(res['recently_list']['recently_view'][i])
-                        let title = res['recently_list']['recently_view'][i]['title']
-                        let content = res['recently_list']['recently_view'][i]['content'].slice(0,87)+'...'
-                        let urls = res['recently_list']['recently_view'][i]['url']
-                        let id = res['recently_list']['recently_view'][i]['recently_view_id']
-                        let proposer_name = res['recently_list']['recently_view'][i]['proposer_name']
-                        let proposer_names = res['recently_list']['recently_view'][i]['proposer_names']
+            show_recently()
+        }
 
-                        temp_html += `
+    })
+
+})
+
+function show_recently() {
+    $.ajax({
+        type: "GET",
+        url: `/mypage/recently_view`,
+        success: function (res) {
+            $("#mypage-contents").empty();
+            let temp_html = `<div class='columns is-mobile' style="flex-wrap: wrap">`
+            for (let i = res['recently_list']['recently_view'].length - 1; i >= 0; i--) {
+                console.log(res['recently_list']['recently_view'][i])
+                let title = res['recently_list']['recently_view'][i]['title']
+                let content = res['recently_list']['recently_view'][i]['content'].slice(0, 87) + '...'
+                let urls = res['recently_list']['recently_view'][i]['url']
+                let id = res['recently_list']['recently_view'][i]['recently_view_id']
+                let proposer_name = res['recently_list']['recently_view'][i]['proposer_name']
+                let proposer_names = res['recently_list']['recently_view'][i]['proposer_names']
+
+                temp_html += `
                                     <div class='column is-3-tablet is-6-mobile'>
                                         <div class='card'>
                                             <p class="card-header-title">${title}</p>
                                             <div class='card-content'>
                                                 <div class='content'>
-                                                    <span class='tag is-dark subtitle'>#1</span>
                                                     <p>${content}</p>
                                                 </div>
                                             </div>
@@ -265,16 +270,12 @@ $(document).ready(function () {
                                         <br>
                                     </div>
                                 `
-                    }
-                    $('#mypage-contents').append(temp_html+`</div>`)
-                    console.log(res['recently_list']['recently_view'])
-                }
-            })
+            }
+            $('#mypage-contents').append(temp_html + `</div>`)
+            console.log(res['recently_list']['recently_view'])
         }
-
     })
-
-})
+}
 
 function dpmenu() {
     if ($(".dropdown").hasClass("is-active")) {
@@ -379,8 +380,6 @@ function open_modal(url, id, title, proposer_name, proposer_names) {
                                 <button class="modal-close is-large" aria-label="close" onclick="close_modal2()"></button>
                             </div>`
             $('body').append(temp_html)
-
-            add_like_hate_button(id, like, hate, title)
 
             // 인증된 사용자에게만 즐겨찾기, 좋아요/싫어요 버튼을 보이도록 처리
             if (is_authenticated == false) {
